@@ -763,6 +763,3 @@ The numerical data used in the final report and publication will be traceable ba
 
 > **The repository is intended to make the result inspectable and reproducible, not simply visible.**
 
-
-
-ing the same flow physics and aerodynamic conclusion, not simply matching one final coefficient.**
