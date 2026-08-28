@@ -697,3 +697,72 @@ rerun validated CFD on the optimum
 ```
 
 > **The optimisation begins only after the numerical method has stopped being the main uncertainty.**
+
+## 9. Reproducibility
+
+This repository is being prepared as the reproducible package behind the study.
+
+The aim is to make the numerical method, analytical checks, post-processing and reference results independently inspectable rather than presenting only final figures.
+
+### 9.1 Public release contents
+
+The completed repository will contain:
+
+```text
+Supersonic_Diamond_Airfoil_CFD_Mach_2p5/
+│
+├── src/                 C++17 Euler solver
+├── include/             solver headers
+├── cases/               reference numerical cases
+├── analytical/          independent theory checks
+├── openfoam/            SA-RANS cases
+├── postProcessing/      analysis and plotting tools
+├── results/             reference numerical data
+├── figures/             final figures
+├── animations/          flow-field animations
+├── report/              technical report
+│
+├── README.md
+├── CITATION.cff
+└── LICENSE
+```
+
+Only files that belong to a reproducible calculation will be included in the final public structure.
+
+Temporary development files, intermediate experiments and duplicated outputs will be kept out of the reference workflow.
+
+### 9.2 Reproduction workflow
+
+The final release will provide a direct path from source code to the verified reference result:
+
+```text
+build solver
+     ↓
+run reference case
+     ↓
+extract numerical solution
+     ↓
+run analytical checks
+     ↓
+post-process results
+     ↓
+reproduce reference figures
+```
+
+Exact compilation commands, executable names and run instructions will be added after the public source tree has been cleaned and frozen.
+
+This prevents the README from documenting temporary local paths or development commands that will later change.
+
+### 9.3 Reproduction standard
+
+Reproducing the project will mean more than obtaining similar final force coefficients.
+
+A successful reproduction should recover the reference flow field, surface loading, convergence behaviour and analytical comparisons using the supplied source, case definition and post-processing tools.
+
+The numerical data used in the final report and publication will be traceable back to the corresponding solver configuration and processing script.
+
+> **The repository is intended to make the result inspectable and reproducible, not simply visible.**
+
+
+
+ing the same flow physics and aerodynamic conclusion, not simply matching one final coefficient.**
