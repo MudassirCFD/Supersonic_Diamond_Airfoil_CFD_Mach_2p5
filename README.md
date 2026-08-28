@@ -11,8 +11,8 @@ I developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes 
 ## Numerical development of the wave field
 
 <p align="center">
-  <img src="assets/animations/weno5_hllc_schlieren_smoke.gif"
-       alt="Numerical schlieren evolution for the WENO5-JS HLLC solution"
+  <img src="./animations/weno5_hllc_schlieren_smoke.gif"
+       alt="Numerical schlieren evolution of the WENO5-JS HLLC solution"
        width="900">
 </p>
 
