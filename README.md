@@ -154,6 +154,35 @@ HLLC intercell flux
 SSP-RK3 time integration
 ```
 
+### 3.6 Build and run
+
+The Euler solver is written in C++17 and uses only the standard library.
+
+Compile from the repository root with:
+
+```bash
+g++ -O3 -std=c++17 src/euler_solver/main.cpp -o diamond_solver
+```
+
+Run the reference case with:
+
+```bash
+./diamond_solver \
+    --max-iters 40000 \
+    --min-iters 40000 \
+    --output results/euler/reference
+```
+
+The default solver configuration already contains the reference condition described in Section 2: Mach 2.5, 5° angle of attack, `t/c = 0.10` and the `720 × 360` Cartesian grid.
+
+Available runtime options can be viewed with:
+
+```bash
+./diamond_solver --help
+```
+
+---
+
 ## 4. WENO5-HLLC flow field
 
 The final Euler solution recovers the expected asymmetric supersonic wave system.
