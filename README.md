@@ -154,8 +154,6 @@ HLLC intercell flux
 SSP-RK3 time integration
 ```
 
----
-
 ## 4. WENO5-HLLC flow field
 
 The final Euler solution recovers the expected asymmetric supersonic wave system.
@@ -278,7 +276,7 @@ For the present diamond geometry, the change in panel direction is
 
 The geometric turning is the same on both sides, but the flow entering each expansion is different because the two leading-edge shocks have already produced different upstream states.
 
-Using the post-shock Mach numbers from Section 5.2:
+Using the post-shock Mach numbers from Section 5.1:
 
 | Quantity | Upper surface | Lower surface |
 |---|---:|---:|
@@ -333,7 +331,7 @@ C_p
 \frac{p-p_\infty}{q_\infty}.
 ```
 
-Using the analytical shock-expansion states from Sections 5.2 and 5.3 gives approximately:
+Using the analytical shock-expansion states from Sections 5.1 and 5.2 gives approximately:
 
 | Panel | Analytical pressure | Analytical `Cp` |
 |---|---:|---:|
