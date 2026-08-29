@@ -496,55 +496,97 @@ The question is whether the main aerodynamic conclusion remains consistent when 
 
 ### 7.1 Current RANS status
 
-The RANS calculation is still being converged, so no final viscous coefficient is reported yet.
+The SA-RANS calculation is still being converged, so no final viscous coefficient is reported yet.
 
-At iteration 8000, the monitored coefficients were approximately:
+At iteration `15000`, the monitored aerodynamic coefficients are:
 
-| Quantity | Iteration 7001 | Iteration 8000 | Change |
+| Quantity | Value |
+|---|---:|
+| `Cd` | 0.035215 |
+| Pressure drag, `Cd,p` | 0.029793 |
+| Viscous drag, `Cd,v` | 0.005422 |
+| `Cl` | 0.137125 |
+| `Cm` | -0.022348 |
+| `L/D` | 3.894 |
+
+The wall resolution at this stage is:
+
+| Quantity | Value |
+|---|---:|
+| Minimum `y+` | 0.200 |
+| Average `y+` | 0.381 |
+| Maximum `y+` | 1.617 |
+
+The near-wall resolution therefore remains appropriate for the wall-resolved SA treatment.
+
+However, the force history shows that the solution is still evolving.
+
+Between iterations `8000` and `15000`:
+
+| Quantity | Iteration 8000 | Iteration 15000 | Change |
 |---|---:|---:|---:|
-| `Cd` | 0.034497 | 0.034278 | -0.63% |
-| Pressure drag, `Cd,p` | 0.027910 | 0.027900 | -0.04% |
-| Viscous drag, `Cd,v` | 0.006586 | 0.006378 | -3.17% |
-| `Cl` | 0.135387 | 0.134790 | -0.44% |
-| `Cm` | -0.024692 | -0.024255 | ~1.77% in magnitude |
+| `Cd` | 0.034278 | 0.035215 | +2.73% |
+| `Cd,p` | 0.027900 | 0.029793 | +6.78% |
+| `Cd,v` | 0.006378 | 0.005422 | -14.99% |
+| `Cl` | 0.134790 | 0.137125 | +1.73% |
+| `Cm` | -0.024255 | -0.022348 | -7.86% in magnitude |
 
-The pressure contribution is already almost stationary, changing by only about **0.04%** over the final 1000 iterations.
+The longer calculation therefore shows that the apparent pressure-force stationarity observed near iteration `8000` was premature.
 
-The viscous contribution is not.
+The pressure contribution has moved upward while the viscous contribution has continued to decrease.
 
-`Cd,v` is still decreasing by more than **3%**, which means the boundary-layer solution has not yet reached the same level of stationarity as the pressure field.
+> **The RANS reference is therefore still provisional and will only be accepted when pressure drag, viscous drag, lift and pitching moment are simultaneously stationary.**
 
-This distinction matters because the total drag can appear nearly settled while its viscous component is still evolving.
+### 7.2 Current cross-fidelity observation
 
-> **I therefore do not report the current RANS drag as a final result. Pressure convergence and skin-friction convergence are being judged separately.**
-
-### 7.2 First cross-fidelity observation
-
-One result is already useful before the RANS calculation is declared complete.
-
-The current pressure-drag contribution is approximately
+The converged Euler reference gives
 
 ```math
-C_{D,p} \approx 0.02790.
+C_D = 0.031606.
 ```
 
-This is close to the pressure-driven loading obtained from the inviscid analysis.
+Because the Euler calculation contains no wall-shear contribution, this drag is entirely pressure generated.
 
-That agreement is encouraging because the Euler and RANS calculations use different governing equations and different numerical implementations, yet the dominant pressure-wave contribution is already of similar magnitude.
+At iteration `15000`, the RANS pressure contribution is
 
-The final comparison will only be made after the viscous drag, lift and pitching moment histories have become sufficiently stationary.
+```math
+C_{D,p} = 0.029793,
+```
+
+approximately `5.74%` below the Euler value.
+
+The RANS calculation also contains a viscous contribution,
+
+```math
+C_{D,v} = 0.005422,
+```
+
+giving
+
+```math
+C_D = 0.035215.
+```
+
+The total RANS drag is therefore approximately `11.42%` above the Euler result.
 
 ```text
-verified Euler wave physics
-            ↓
-wall-resolved viscous RANS
-            ↓
-separate pressure and skin-friction convergence
-            ↓
-cross-fidelity aerodynamic comparison
+Euler
+Cd = 0.031606
+pressure loading only
+        ↓
+viscous RANS
+        ↓
+Cd,p = 0.029793
+Cd,v = 0.005422
+        ↓
+Cd = 0.035215
 ```
 
-> **The RANS result will be accepted only when the pressure field and the viscous contribution are both sufficiently settled.**
+The lower RANS pressure contribution is treated as an observation rather than evidence of agreement with the Euler solution.
+
+Its physical origin will be assessed after convergence using the surface-pressure distribution, shock structure and boundary-layer behaviour.
+
+> **The final Euler-RANS comparison will be based on the converged pressure and viscous force components together with the flow physics responsible for them.**
 
 ## 8. From verified RANS baseline to aerodynamic design
 
