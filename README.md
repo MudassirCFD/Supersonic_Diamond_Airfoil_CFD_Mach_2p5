@@ -249,8 +249,7 @@ different post-shock states
 asymmetric pressure loading
 ```
 
-The analytical solution therefore predicts both the position and relative strength of the leading-edge shocks before the integrated aerodynamic forces are considered.
-
+The analytical solution therefore predicts both the angle and relative strength of the leading-edge shocks before the integrated aerodynamic forces are considered.
 The numerical solution is expected to reproduce:
 
 - a weak upper leading-edge shock near `β ≈ 24.1°`;
