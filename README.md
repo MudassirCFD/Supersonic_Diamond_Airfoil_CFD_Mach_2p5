@@ -512,6 +512,14 @@ The final WENO5-JS solution was therefore selected not because it changed the an
 
 > **The preferred scheme improved local wave resolution without creating a new global aerodynamic result.**
 
+### 6.3 Sharp edge and immersed-boundary limitation
+
+The diamond airfoil has ideal zero-radius leading and trailing edges.
+
+On the Cartesian immersed-boundary grid, these corners cannot be represented as exact body-fitted surface points. The local pressure and gradient fields very close to the corners are therefore more sensitive to the discrete body representation than the flow away from the surface.
+
+For this reason, isolated values taken directly at a sharp corner are not used as standalone evidence. The solution is assessed using the surrounding shock and expansion structure, surface-pressure behaviour away from the vertices, analytical state checks and integrated aerodynamic forces.
+
 ## 7. Increasing the modelling fidelity: wall-resolved SA-RANS
 
 The Euler solver establishes the inviscid shock-expansion physics, but it cannot predict skin friction or the interaction between the boundary layer and the pressure field.
