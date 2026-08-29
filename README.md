@@ -193,75 +193,76 @@ I use several independent checks because no single CFD quantity is enough to pro
 
 The first check is the leading-edge shock geometry.
 
-### 5.1 Leading-edge shock angles
+### 5.1 Leading-edge shock verification
 
-For an attached oblique shock, the shock angle `β` is related to the upstream Mach number `M`, the flow turning angle `θ` and the specific-heat ratio `γ` through the nonlinear `θ-β-M` relation [1].
+For the symmetric diamond geometry,
 
-For this Mach 2.5 case, the upper and lower forward surfaces do not turn the flow by the same amount because the airfoil is at 5° incidence.
-
-The analytical weak-shock solution gives approximately:
-
-| Shock | Analytical angle |
-|---|---:|
-| Upper leading edge | **24.1°** |
-| Lower leading edge | **32.5°** |
-
-The stronger lower-surface compression therefore produces the larger shock angle.
-
-### 5.2 Shock-strength verification
-
-Matching the shock direction is only the first check.
-
-The CFD must also recover the correct state change across each leading-edge shock.
-
-For the present diamond geometry,
-
-```math
-\delta
-=
-\tan^{-1}\left(\frac{t}{c}\right)
-=
-\tan^{-1}(0.10)
-\approx
-5.71^\circ.
+```text
+thickness ratio, t/c = 0.10
+half angle, δ         = atan(0.10)
+                      ≈ 5.71 deg
 ```
 
-At `α = 5°`, the effective leading-edge compression angles are approximately:
+At `α = 5°`, the upper and lower forward panels experience different effective compression turns:
 
-| Surface | Flow turning, `θ` | Shock angle, `β` |
+```text
+upper surface turning angle ≈ 0.71 deg
+lower surface turning angle ≈ 10.71 deg
+```
+
+The lower surface therefore produces the substantially stronger leading-edge compression.
+
+The weak-shock solution of the `θ-β-M` relation gives:
+
+| Surface | Turning angle, `θ` | Shock angle, `β` |
 |---|---:|---:|
-| Upper | 0.71° | 24.09° |
-| Lower | 10.71° | 32.53° |
+| Upper forward panel | 0.71° | 24.09° |
+| Lower forward panel | 10.71° | 32.53° |
 
-The upper compression is therefore very weak, while the lower surface produces a much stronger oblique shock.
+The shock-angle prediction provides the first analytical check on the numerical wave structure.
 
-Using the weak-shock solution together with the Rankine-Hugoniot relations [1] gives:
+The corresponding Rankine-Hugoniot states are:
 
 | Quantity | Upper shock | Lower shock |
 |---|---:|---:|
+| `θ` | 0.71° | 10.71° |
+| `β` | 24.09° | 32.53° |
 | `Mn1` | 1.020 | 1.344 |
 | `p2/p1` | 1.048 | 1.942 |
-| `rho2/rho1` | 1.034 | 1.593 |
+| `ρ2/ρ1` | 1.034 | 1.593 |
 | `T2/T1` | 1.014 | 1.219 |
 | `M2` | 2.470 | 2.056 |
 | `p2` | 106.2 kPa | 196.8 kPa |
 
-The difference is substantial.
+The upper shock is weak because the local flow turning is only about `0.71°`.
 
-The upper leading-edge shock raises the static pressure by only about **4.8%**, while the lower shock raises it by about **94.2%**.
+The lower surface turns the flow by approximately `10.71°`, producing a much stronger pressure rise and a larger reduction in Mach number.
 
-This is the physical origin of the strong pressure asymmetry over the forward panels.
+```text
+M∞ = 2.5
+   ↓
+different local turning on upper and lower panels
+   ↓
+upper surface: weak compression
+lower surface: stronger compression
+   ↓
+different post-shock states
+   ↓
+asymmetric pressure loading
+```
 
-The numerical solution is therefore checked in two separate ways:
+The analytical solution therefore predicts both the position and relative strength of the leading-edge shocks before the integrated aerodynamic forces are considered.
 
-- **shock direction** against the nonlinear `θ-β-M` prediction;
-- **shock strength** against the analytical pressure, density, temperature and Mach-number change.
+The numerical solution is expected to reproduce:
 
-A shock can appear at approximately the correct angle while still producing the wrong downstream state. That error would feed directly into the predicted pressure loading, lift and wave drag.
+- a weak upper leading-edge shock near `β ≈ 24.1°`;
+- a stronger lower leading-edge shock near `β ≈ 32.5°`;
+- the corresponding pressure rise across each compression;
+- the stronger Mach-number reduction behind the lower shock.
 
-> **The shock angle checks where the discontinuity goes. The Rankine-Hugoniot state checks whether the solver has produced the correct physics across it.**
+> **Leading-edge verification therefore uses both shock angle and post-shock state rather than shock position alone.**
 
-### 5.3 Expansion-state verification
+### 5.2 Expansion-state verification
 
 The mid-chord corners turn the flow away from the surface and generate Prandtl-Meyer expansion fans [1].
 
@@ -310,7 +311,7 @@ The numerical solution is therefore checked against the complete shock-expansion
 
 > **The leading-edge shock establishes the state entering the expansion; the Prandtl-Meyer relation checks whether the solver carries that state correctly through the fan.**
 
-### 5.4 Surface-pressure verification
+### 5.3 Surface-pressure verification
 
 The shock and expansion checks can be carried one step further by comparing the resulting panel pressures.
 
@@ -351,7 +352,7 @@ The numerical surface-pressure distribution is compared against these analytical
 
 > **The wave structure predicts the pressure field, and the pressure field must explain the integrated aerodynamic forces.**
 
-### 5.5 Integrated-force verification
+### 5.4 Integrated-force verification
 
 The final check is whether the verified shock-expansion pressure field produces the correct integrated aerodynamic forces.
 
