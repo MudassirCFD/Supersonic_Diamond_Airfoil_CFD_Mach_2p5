@@ -537,39 +537,7 @@ The objective is not to begin a parameter sweep as soon as the solver appears st
 
 The reference case must first be converged, checked for domain sensitivity and then frozen as the production CFD setup.
 
-### 8.1 Establish the RANS reference solution
-
-The current large-domain calculation at
-
-```math
-M_\infty = 2.5,
-\qquad
-\alpha = 5^\circ
-```
-
-is being treated as the reference RANS case.
-
-Convergence is monitored separately for the pressure and viscous contributions to the aerodynamic loading.
-
-The quantities being tracked include:
-
-- total drag, `Cd`;
-- pressure drag, `Cd,p`;
-- viscous drag, `Cd,v`;
-- lift, `Cl`;
-- pitching moment, `Cm`;
-- surface pressure, `Cp(x/c)`;
-- wall resolution, `y+(x/c)`;
-- wall shear stress, `τw(x/c)`;
-- shock position and overall wave structure.
-
-The current pressure contribution is already close to stationary, while the viscous contribution is still evolving.
-
-For that reason, the present RANS result is not yet treated as final.
-
-> **The reference solution is accepted only when both the pressure field and the boundary-layer contribution are sufficiently stationary.**
-
-### 8.2 Prove domain independence
+### 8.1 Prove domain independence
 
 Once the large-domain reference case has converged, a smaller candidate domain will be created and warm-started from the established solution.
 
@@ -599,7 +567,7 @@ If the smaller domain reproduces the reference solution within the adopted toler
 
 This avoids carrying unnecessary computational cost into every subsequent case while preserving the validated flow physics.
 
-### 8.3 Freeze the production CFD setup
+### 8.2 Freeze the production CFD setup
 
 After the domain-independence check, the accepted numerical setup will be frozen.
 
@@ -619,7 +587,7 @@ The frozen configuration will define the common:
 
 > **Once the baseline methodology is verified, the solver setup stops being another design variable.**
 
-### 8.4 Controlled angle-of-attack sweep
+### 8.3 Controlled angle-of-attack sweep
 
 The first production study will be a controlled angle-of-attack sweep.
 
@@ -651,7 +619,7 @@ surface pressure and skin friction
 Cl, Cd and Cm
 ```
 
-### 8.5 Geometry optimisation
+### 8.4 Geometry optimisation
 
 Only after the baseline and incidence behaviour are understood will the geometry be varied.
 
@@ -673,7 +641,7 @@ Changes in lift, wave drag, viscous drag, pitching moment, shock structure and b
 
 A candidate will only be treated as an improvement if the aerodynamic benefit remains physically consistent with the verified flow solution.
 
-### 8.6 Final verification of the optimum
+### 8.5 Final verification of the optimum
 
 The best-performing geometry will not be accepted directly from the optimisation loop.
 
