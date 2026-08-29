@@ -6,7 +6,7 @@ This project studies a two-dimensional diamond airfoil at Mach 2.5 and 5° angle
 
 The geometry creates a clear system of compression waves, oblique shocks and Prandtl-Meyer expansions. This makes it a useful case for checking whether a numerical solution recovers the physics predicted by classical compressible-flow theory [1].
 
-I developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes [2,3], WENO5-JS reconstruction [4] and SSP-RK3 time integration [5]. The airfoil is represented on a Cartesian grid using an immersed-boundary treatment [12].
+I developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes [2,3], WENO5-JS reconstruction [4] and SSP-RK3 time integration [5]. The airfoil is represented on a Cartesian grid using an immersed-boundary treatment [8].
 
 ## Numerical development of the wave field
 
@@ -723,3 +723,22 @@ rerun validated CFD on the optimum
 
 > **The optimisation begins only after the numerical method has stopped being the main uncertainty.**
 
+---
+
+## References
+
+[1] J. D. Anderson Jr., *Modern Compressible Flow: With Historical Perspective*, 3rd ed., McGraw-Hill, 2003.
+
+[2] E. F. Toro, *Riemann Solvers and Numerical Methods for Fluid Dynamics: A Practical Introduction*, 3rd ed., Springer, 2009.
+
+[3] E. F. Toro, M. Spruce and W. Speares, “Restoration of the contact surface in the HLL-Riemann solver,” *Shock Waves*, Vol. 4, pp. 25–34, 1994. https://doi.org/10.1007/BF01414629
+
+[4] G.-S. Jiang and C.-W. Shu, “Efficient implementation of weighted ENO schemes,” *Journal of Computational Physics*, Vol. 126, No. 1, pp. 202–228, 1996. https://doi.org/10.1006/jcph.1996.0130
+
+[5] C.-W. Shu and S. Osher, “Efficient implementation of essentially non-oscillatory shock-capturing schemes,” *Journal of Computational Physics*, Vol. 77, No. 2, pp. 439–471, 1988. https://doi.org/10.1016/0021-9991(88)90177-5
+
+[6] T. J. Barth and D. C. Jespersen, “The design and application of upwind schemes on unstructured meshes,” AIAA Paper 89-0366, 27th Aerospace Sciences Meeting, 1989. https://doi.org/10.2514/6.1989-366
+
+[7] P. R. Spalart and S. R. Allmaras, “A one-equation turbulence model for aerodynamic flows,” AIAA Paper 92-0439, 30th Aerospace Sciences Meeting and Exhibit, 1992. https://doi.org/10.2514/6.1992-439
+
+[8] R. Mittal and G. Iaccarino, “Immersed Boundary Methods,” *Annual Review of Fluid Mechanics*, Vol. 37, pp. 239–261, 2005. https://doi.org/10.1146/annurev.fluid.37.061903.175743
