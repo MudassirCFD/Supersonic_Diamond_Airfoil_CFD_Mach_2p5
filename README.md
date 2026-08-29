@@ -352,7 +352,7 @@ The numerical surface-pressure distribution is compared against these analytical
 
 ### 5.4 Integrated-force verification
 
-The final check is whether the verified shock-expansion pressure field produces the correct integrated aerodynamic forces.
+The final analytical check is whether the verified shock-expansion pressure field produces the correct integrated aerodynamic forces.
 
 For the reference case, the WENO5-JS + HLLC Euler solution gives
 
@@ -367,8 +367,8 @@ These values are compared against two independent analytical references:
 | Method | `Cd` | `Cl` |
 |---|---:|---:|
 | Ackeret linear theory | 0.030752 | 0.152345 |
-| Nonlinear shock-expansion theory | 0.030572 | 0.150450 |
-| WENO5-JS + HLLC CFD | **0.031606** | **0.156778** |
+| Nonlinear shock-expansion theory | 0.031714 | 0.156485 |
+| WENO5-JS + HLLC CFD | 0.031606 | 0.156778 |
 
 Relative to Ackeret theory, the CFD result differs by approximately:
 
@@ -378,36 +378,53 @@ Relative to Ackeret theory, the CFD result differs by approximately:
 \Delta C_L \approx +2.91\%.
 ```
 
-Relative to the nonlinear shock-expansion solution, the differences are approximately:
+Relative to the nonlinear shock-expansion solution:
 
 ```math
-\Delta C_D \approx +3.38\%,
+\Delta C_D \approx -0.34\%,
 \qquad
-\Delta C_L \approx +4.21\%.
+\Delta C_L \approx +0.19\%.
 ```
 
-The agreement is therefore close across three different levels of modelling:
+The substantially closer agreement with the nonlinear solution is physically consistent with the finite-strength compression and expansion waves present at Mach 2.5.
 
 ```text
-linearised supersonic theory
-            ↓
+linearised Ackeret theory
+          ↓
+approximate supersonic loading
+
 nonlinear shock-expansion theory
-            ↓
-finite-volume Euler CFD
+          ↓
+finite-strength wave states
+          ↓
+Cd = 0.031714
+Cl = 0.156485
+
+WENO5-JS + HLLC CFD
+          ↓
+Cd = 0.031606
+Cl = 0.156778
+
+difference
+          ↓
+Cd = -0.34%
+Cl = +0.19%
 ```
 
-This comparison is important because the force coefficients are not being accepted in isolation.
+This comparison is especially important because the integrated forces are not being accepted in isolation.
 
-The same solution has already been checked against:
+The same analytical chain has already established:
 
-- leading-edge shock angles;
+- leading-edge turning angles;
+- oblique-shock angles;
 - Rankine-Hugoniot state changes;
 - Prandtl-Meyer expansion states;
-- analytical panel pressures.
+- forward- and rear-panel pressures;
+- surface-pressure coefficients.
 
-The integrated lift and drag are therefore the final result of a verification chain that begins with the local wave physics.
+The independently integrated nonlinear pressure field therefore closes the verification chain from local wave physics to global aerodynamic loading.
 
-> **The force agreement is meaningful because the shock structure, thermodynamic states and pressure loading are also physically consistent.**
+> **The 720 × 360 WENO5-HLLC solution agrees with nonlinear shock-expansion theory to approximately 0.34% in drag and 0.19% in lift.**
 
 ## 6. Numerical convergence and robustness
 
