@@ -350,44 +350,30 @@ These analytical states provide the reference for the numerical pressure loading
 
 ### 5.3 Surface-pressure verification
 
-The shock and expansion checks can be carried one step further by comparing the resulting panel pressures.
+The analytical shock and expansion states give the following panel pressure coefficients:
 
-For the reference condition,
+| Panel | Analytical `Cp` |
+|---|---:|
+| Upper forward | +0.0110 |
+| Lower forward | +0.2153 |
+| Upper rear | -0.1229 |
+| Lower rear | -0.0099 |
 
-```math
-q_\infty
-=
-\frac{1}{2}\gamma p_\infty M_\infty^2
-\approx
-4.433\times10^5\ \mathrm{Pa}.
-```
+The numerical surface-pressure distribution is compared with both Ackeret theory and the nonlinear shock-expansion solution.
 
-The pressure coefficient is
+<p align="center">
+  <img src="postprocessing/euler/figures/surface_cp.png"
+       alt="Surface pressure coefficient verification for the Mach 2.5 diamond airfoil"
+       width="900">
+</p>
 
-```math
-C_p
-=
-\frac{p-p_\infty}{q_\infty}.
-```
+The WENO5-JS + HLLC solution reproduces the expected pressure-loading pattern: strong compression on the lower forward panel and the largest pressure reduction on the upper rear panel.
 
-Using the analytical shock-expansion states from Sections 5.1 and 5.2 gives approximately:
+Because the airfoil is represented using a Cartesian immersed boundary, the numerical values are taken from the nearest external fluid cells rather than body-fitted wall faces. They should therefore be interpreted as a **nearest-fluid-cell pressure proxy**, particularly close to the sharp corners where the analytical solution changes discontinuously.
 
-| Panel | Analytical pressure | Analytical `Cp` |
-|---|---:|---:|
-| Upper forward | 106.2 kPa | +0.011 |
-| Lower forward | 196.8 kPa | +0.215 |
-| Upper rear | 46.9 kPa | -0.123 |
-| Lower rear | 97.0 kPa | -0.010 |
+Away from these local corner regions, the numerical pressure levels follow the nonlinear shock-expansion prediction closely.
 
-The pressure pattern explains the aerodynamic loading directly.
-
-The lower forward panel carries the strongest positive pressure coefficient, while the upper rear panel experiences the strongest pressure reduction.
-
-Together, the four panel pressures generate a net positive lift, while their streamwise pressure components produce the inviscid wave drag.
-
-The numerical surface-pressure distribution is compared against these analytical shock-expansion states rather than judged only from contour appearance.
-
-> **The wave structure predicts the pressure field, and the pressure field must explain the integrated aerodynamic forces.**
+> **The resolved surface pressure provides the link between the local wave structure and the integrated lift and wave drag.**
 
 ### 5.4 Integrated-force verification
 
@@ -485,33 +471,36 @@ Agreement with theory is only useful if the numerical solution itself is suffici
 
 For the final WENO5-JS + HLLC calculation, convergence was monitored using both the residual history and the integrated aerodynamic forces.
 
-### 6.1 Convergence control
+### 6.1 Convergence assessment
 
-The final solver used the following convergence controls:
+The final WENO5 JS + HLLC calculation was continued to **40,000 iterations**.
 
-| Check | Setting |
-|---|---:|
-| Minimum iterations before convergence check | 8000 |
-| Residual tolerance | `1e-5` |
-| Force-monitor window | 12 samples |
-| Force-window tolerance | `1e-4` |
-| Flow-field snapshot interval | 500 iterations |
-
-The calculation was continued to **40,000 iterations**, allowing the initial transient, wave establishment and final force behaviour to be inspected independently.
-
-The final integrated coefficients were
+The integrated aerodynamic coefficients became stationary well before the end of the run:
 
 ```math
-C_D = 0.031606,
+C_D = 0.03160637093,
 \qquad
-C_L = 0.156778.
+C_L = 0.15677811494.
 ```
 
-A stable force history alone was not treated as sufficient evidence of convergence.
+<p align="center">
+  <img src="postprocessing/euler/figures/force_history.png"
+       alt="Lift and drag coefficient history for the WENO5 JS HLLC calculation"
+       width="900">
+</p>
 
-The numerical schlieren field, surface pressure and analytical shock-expansion states were checked alongside the force histories to ensure that the settled coefficients came from the correct physical flow structure.
+The final 12 recorded force samples are identical at the precision stored in the force history:
 
-> **Convergence was judged from both numerical stability and physical consistency, not from a single residual threshold.**
+| Quantity | Final value | Range over final 12 samples |
+|---|---:|---:|
+| `Cd` | 0.03160637093 | 0 |
+| `Cl` | 0.15677811494 | 0 |
+
+The cellwise residual and solution change histories remain oscillatory at late iterations and do not provide standalone evidence of convergence. Their history is therefore retained in `figures/diagnostics/` as a numerical diagnostic rather than used as the primary convergence result.
+
+Convergence of the reference solution is assessed from the stationary aerodynamic coefficients together with the independently verified shock geometry, pressure states and surface loading.
+
+> **The final aerodynamic loading is stationary, while the residual history is reported separately and interpreted as a diagnostic rather than a convergence claim.**
 
 ### 6.2 Robustness to reconstruction method
 
