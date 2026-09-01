@@ -239,14 +239,24 @@ lower surface turning angle ≈ 10.71 deg
 
 The lower surface therefore produces the substantially stronger leading-edge compression.
 
-The weak-shock solution of the `θ-β-M` relation gives:
+For an attached oblique shock, the shock angle `β` is obtained from the nonlinear `θ-β-M` relation,
 
-| Surface | Turning angle, `θ` | Shock angle, `β` |
+```math
+\tan\theta
+=
+2\cot\beta
+\left[
+\frac{M_\infty^2\sin^2\beta-1}
+{M_\infty^2(\gamma+\cos 2\beta)+2}
+\right].
+```
+
+Using the weak-shock solution gives:
+
+| Surface | Turning angle, `θ` | Theory shock angle, `β` |
 |---|---:|---:|
 | Upper forward panel | 0.71° | 24.09° |
 | Lower forward panel | 10.71° | 32.53° |
-
-The shock-angle prediction provides the first analytical check on the numerical wave structure.
 
 The corresponding Rankine-Hugoniot states are:
 
@@ -261,81 +271,82 @@ The corresponding Rankine-Hugoniot states are:
 | `M2` | 2.470 | 2.056 |
 | `p2` | 106.2 kPa | 196.8 kPa |
 
-The upper shock is weak because the local flow turning is only about `0.71°`.
+The upper shock is weak because the local flow turning is only about `0.71°`. The lower surface turns the flow by approximately `10.71°`, producing a much stronger pressure rise and a larger reduction in Mach number.
 
-The lower surface turns the flow by approximately `10.71°`, producing a much stronger pressure rise and a larger reduction in Mach number.
+The analytical shock-angle prediction was then compared directly with the numerical solution.
+
+The numerical shock location was extracted from maxima in the density-gradient field. A straight line was fitted through the detected ridge of each leading-edge shock, giving:
+
+| Shock | Theory `β` | WENO5-JS + HLLC `β` | Difference |
+|---|---:|---:|---:|
+| Upper leading edge | 24.09° | 24.55° | +0.46° |
+| Lower leading edge | 32.53° | 32.35° | -0.18° |
+
+<p align="center">
+  <img src="postprocessing/euler/figures/schlieren_shock_angles.png"
+       alt="Leading-edge shock-angle verification from the WENO5-JS HLLC density-gradient field"
+       width="900">
+</p>
+
+The extracted upper shock differs from theory by approximately `+0.46°`, while the lower shock differs by approximately `-0.18°`.
+
+Both numerical shock angles therefore lie within **0.5°** of the nonlinear oblique-shock prediction.
+
+The comparison is based on the resolved density-gradient ridge rather than a manually drawn line. The remaining difference is consistent with the finite numerical shock thickness, Cartesian-grid resolution and the finite spatial interval over which the numerical ridge is fitted.
+
+The stronger lower shock was also checked using an off-body horizontal cut through the numerical solution at approximately `y/c = -0.304`.
+
+<p align="center">
+  <img src="postprocessing/euler/figures/lower_oblique_shock_profiles.png"
+       alt="Lower oblique-shock Mach pressure and pressure-coefficient verification"
+       width="900">
+</p>
+
+Across this cut, the numerical solution is compared with the ideal Rankine-Hugoniot post-shock state in terms of Mach number, pressure ratio and pressure coefficient.
+
+The analytical shock is a mathematical discontinuity, while the finite-volume calculation captures the transition over a finite number of cells. Away from this captured shock thickness, the numerical solution approaches the theoretical post-shock state closely.
+
+The leading-edge verification therefore checks both **where the shock forms** and **whether the state behind it is physically correct**:
 
 ```text
-M∞ = 2.5
-   ↓
-different local turning on upper and lower panels
-   ↓
-upper surface: weak compression
-lower surface: stronger compression
-   ↓
-different post-shock states
-   ↓
-asymmetric pressure loading
+local flow turning
+        ↓
+theoretical shock angle
+        ↓
+numerically extracted shock angle
+        ↓
+post-shock Mach and pressure state
+        ↓
+surface-pressure loading
 ```
 
-The analytical solution therefore predicts both the angle and relative strength of the leading-edge shocks before the integrated aerodynamic forces are considered.
-The numerical solution is expected to reproduce:
-
-- a weak upper leading-edge shock near `β ≈ 24.1°`;
-- a stronger lower leading-edge shock near `β ≈ 32.5°`;
-- the corresponding pressure rise across each compression;
-- the stronger Mach-number reduction behind the lower shock.
-
-> **Leading-edge verification therefore uses both shock angle and post-shock state rather than shock position alone.**
+> **The WENO5-JS + HLLC solution recovers the upper and lower leading-edge shock angles to within 0.5° of nonlinear oblique-shock theory while also reproducing the expected post-shock states.**
 
 ### 5.2 Expansion-state verification
 
-The mid-chord corners turn the flow away from the surface and generate Prandtl-Meyer expansion fans [1].
-
-For the present diamond geometry, the change in panel direction is
+At the mid-chord corners, both surfaces turn through
 
 ```math
-\Delta\theta
-=
-2\delta
-\approx
-11.42^\circ.
+\Delta\theta = 2\delta \approx 11.42^\circ,
 ```
 
-The geometric turning is the same on both sides, but the flow entering each expansion is different because the two leading-edge shocks have already produced different upstream states.
+producing Prandtl-Meyer expansion fans.
 
-Using the post-shock Mach numbers from Section 5.1:
+Although the geometric turning is the same on both sides, the flow entering each expansion is different because of the unequal leading-edge shocks established in Section 5.1.
 
 | Quantity | Upper surface | Lower surface |
 |---|---:|---:|
 | Mach before expansion | 2.470 | 2.056 |
 | Expansion angle | 11.42° | 11.42° |
 | Mach after expansion | 3.004 | 2.509 |
-| `p2/p1` across expansion | 0.441 | 0.493 |
-| `T2/T1` across expansion | 0.791 | 0.817 |
-| `rho2/rho1` across expansion | 0.557 | 0.603 |
+| Pressure ratio across expansion | 0.441 | 0.493 |
+| Rear-panel pressure | 46.85 kPa | 96.95 kPa |
 
-The upper rear-panel pressure falls to approximately **46.9 kPa**, while the lower rear-panel pressure falls to approximately **97.0 kPa**.
+The upper expansion accelerates the flow to approximately **Mach 3.00**, producing the strongest pressure reduction in the solution. The lower rear-panel pressure remains much higher because its expansion begins from the strongly compressed lower-surface state.
 
-So although both surfaces turn through the same geometric angle, they do not recover the same downstream state.
+These analytical states provide the reference for the numerical pressure loading examined next.
 
-That difference is inherited from the unequal leading-edge compression:
-
-```text
-different leading-edge shocks
-            ↓
-different post-shock states
-            ↓
-same geometric expansion
-            ↓
-different rear-panel pressures
-            ↓
-lift + wave drag + pitching moment
-```
-
-The numerical solution is therefore checked against the complete shock-expansion sequence, not only against isolated contour features.
-
-> **The leading-edge shock establishes the state entering the expansion; the Prandtl-Meyer relation checks whether the solver carries that state correctly through the fan.**
+> **The solver must preserve the different states created by the leading-edge shocks as the flow passes through the two expansion fans.**
 
 ### 5.3 Surface-pressure verification
 
