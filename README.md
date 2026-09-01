@@ -504,28 +504,18 @@ Convergence of the reference solution is assessed from the stationary aerodynami
 
 ### 6.2 Robustness to reconstruction method
 
-Before introducing WENO5-JS, an intermediate HLLC solver with Barth-Jespersen limited reconstruction was used to establish the flux treatment, pressure field and force integration.
+Before the final WENO5-JS formulation, the HLLC solver was tested with Barth-Jespersen limited reconstruction.
 
-The later WENO5-JS + HLLC formulation produced sharper local wave resolution while retaining essentially the same integrated lift and drag at the reported precision.
+Both reconstruction approaches produced essentially the same integrated aerodynamic loading, while WENO5-JS resolved the local shock-expansion structure more sharply.
 
-This is useful because the local numerical representation changed significantly, but the main aerodynamic conclusion did not.
+| Solver branch | Main role | Integrated loading |
+|---|---|---|
+| HLLC + Barth-Jespersen | Intermediate verification branch | Consistent with final solution |
+| WENO5-JS + HLLC | Final reference solver | `Cd = 0.031606`, `Cl = 0.156778` |
 
-```text
-HLLC + limited reconstruction
-            ↓
-verified force integration
-            ↓
-WENO5-JS + HLLC
-            ↓
-sharper shock-expansion structure
-            ↓
-consistent integrated loading
-```
+This provides a useful robustness check: changing the reconstruction altered the local resolution of discontinuities without changing the aerodynamic conclusion.
 
-The final WENO5-JS solution was therefore selected not because it changed the answer, but because it resolved the wave field more cleanly while preserving the verified aerodynamic loading.
-
-> **The preferred scheme improved local wave resolution without creating a new global aerodynamic result.**
-
+> **WENO5-JS was retained because it improved wave resolution, not because it produced a different lift or drag result.**
 ### 6.3 Sharp edge and immersed-boundary limitation
 
 The diamond airfoil has ideal zero-radius leading and trailing edges.
