@@ -378,62 +378,96 @@ The numerical surface-pressure distribution is compared against these analytical
 
 > **The wave structure predicts the pressure field, and the pressure field must explain the integrated aerodynamic forces.**
 
-### 5.4 Surface-pressure verification
+### 5.4 Integrated-force verification
 
-The shock and expansion checks can be carried one step further by comparing the pressure loading predicted on each airfoil panel.
+The final analytical check is whether the verified shock-expansion pressure field produces the correct integrated aerodynamic forces.
 
-For the reference condition,
+For the reference case, the final WENO5-JS + HLLC Euler solution gives
 
-$$
-q_\infty
-=
-\frac{1}{2}\gamma p_\infty M_\infty^2
-\approx
-4.433\times10^5\ \mathrm{Pa}.
-$$
+```math
+C_D = 0.031606,
+\qquad
+C_L = 0.156778.
+```
 
-The pressure coefficient is defined as
+The numerical result is compared with both Ackeret linear theory and the nonlinear shock-expansion solution:
 
-$$
-C_p
-=
-\frac{p-p_\infty}{q_\infty}.
-$$
-
-Using the nonlinear shock-expansion states from Sections 5.2 and 5.3 gives:
-
-| Panel | Analytical pressure | Analytical `Cp` |
+| Method | `Cd` | `Cl` |
 |---|---:|---:|
-| Upper forward | 106.215 kPa | +0.01103 |
-| Lower forward | 196.771 kPa | +0.21531 |
-| Upper rear | 46.850 kPa | -0.12289 |
-| Lower rear | 96.955 kPa | -0.00986 |
+| Ackeret linear theory | 0.030752 | 0.152345 |
+| Nonlinear shock-expansion theory | 0.031714 | 0.156485 |
+| WENO5-JS + HLLC Euler | **0.031606** | **0.156778** |
 
-The loading pattern follows directly from the wave system.
+Relative to Ackeret linear theory,
 
-The lower forward panel experiences the strongest compression and therefore the largest positive pressure coefficient. The upper rear panel undergoes the strongest expansion and reaches the lowest pressure. Together, these four pressure states produce the positive lift and inviscid wave drag of the reference configuration.
+```math
+\Delta C_D
+=
+\frac{C_{D,\mathrm{CFD}}-C_{D,\mathrm{Ackeret}}}
+{C_{D,\mathrm{Ackeret}}}\times100
+\approx +2.78\%,
+```
 
-The numerical surface-pressure distribution is compared directly with both Ackeret linear theory and the nonlinear shock-expansion solution:
+```math
+\Delta C_L
+=
+\frac{C_{L,\mathrm{CFD}}-C_{L,\mathrm{Ackeret}}}
+{C_{L,\mathrm{Ackeret}}}\times100
+\approx +2.91\%.
+```
+
+Ackeret theory provides a useful linearised reference, but the present airfoil contains finite compression and expansion turning angles. The nonlinear shock-expansion solution is therefore the more appropriate reference for the final quantitative comparison.
+
+Relative to nonlinear shock-expansion theory,
+
+```math
+\Delta C_D
+=
+\frac{0.03160637093-0.03171356478}
+{0.03171356478}\times100
+\approx -0.338\%,
+```
+
+```math
+\Delta C_L
+=
+\frac{0.15677811494-0.15648527219}
+{0.15648527219}\times100
+\approx +0.187\%.
+```
+
+The WENO5-JS + HLLC solution therefore agrees with nonlinear shock-expansion theory to approximately **0.34% in drag** and **0.19% in lift**.
 
 <p align="center">
-  <img src="postprocessing/euler/figures/surface_cp.png"
-       alt="Surface pressure coefficient verification for the Mach 2.5 diamond airfoil"
-       width="900">
+  <img src="postprocessing/euler/figures/force_comparison.png"
+       alt="Comparison of lift and drag coefficients from Ackeret theory, nonlinear shock-expansion theory and WENO5-JS HLLC Euler CFD"
+       width="800">
 </p>
 
-The WENO5-JS + HLLC pressure distribution reproduces the expected asymmetry between the upper and lower surfaces and the pressure changes associated with the leading-edge shocks and mid-chord expansion fans.
+This force agreement is not treated as an isolated verification result. The same numerical solution has already been examined through the complete compressible-flow chain:
 
-Because the airfoil is represented on a Cartesian grid using an immersed-boundary treatment, pressure is not available on a body-fitted wall face. The numerical surface values shown above are therefore obtained from the nearest external fluid cells adjacent to the immersed boundary.
+- leading-edge shock angles;
+- Rankine-Hugoniot post-shock states;
+- Prandtl-Meyer expansion states;
+- off-body shock structure;
+- surface-pressure loading.
 
-They should be interpreted as a **nearest-fluid-cell pressure proxy**, not as an exact wall extrapolation.
+The relationship between these checks is
 
-This distinction is most important close to the sharp leading edge, mid-chord corner and trailing edge, where the analytical solution contains abrupt changes in surface state while the numerical solution resolves those changes over a finite number of Cartesian cells.
+```text
+shock and expansion geometry
+            ↓
+local thermodynamic states
+            ↓
+surface-pressure distribution
+            ↓
+integrated lift and wave drag
+```
 
-Away from those local corner regions, the numerical panel-pressure levels follow the nonlinear shock-expansion prediction closely.
+The integrated aerodynamic coefficients are therefore the final consequence of the resolved wave system and pressure loading rather than standalone numerical targets.
 
-The surface-pressure comparison therefore provides the connection between the local wave physics and the integrated aerodynamic coefficients examined next.
-
-> **The wave structure determines the pressure field, and the pressure field must explain the integrated lift and wave drag.**
+> **The WENO5-JS + HLLC solution reproduces the nonlinear shock-expansion prediction to approximately 0.34% in drag and 0.19% in lift, while independently recovering the wave structure and pressure states responsible for those forces.**
+> 
 ## 6. Numerical convergence and robustness
 
 Agreement with theory is only useful if the numerical solution itself is sufficiently settled.
