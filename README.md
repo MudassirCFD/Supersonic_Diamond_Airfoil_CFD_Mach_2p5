@@ -140,7 +140,7 @@ For this problem, that matters because the numerical method must preserve:
 - the mid-chord expansion structure;
 - the pressure distribution that produces wave drag and lift.
 
-Therefore moved from the limited HLLC branch to WENO5-JS when the improvement in local wave resolution justified the additional computational cost.
+The WENO5-JS formulation was therefore adopted when the improvement in local wave resolution justified the additional computational cost.
 
 The final Euler solver uses:
 
@@ -204,9 +204,9 @@ This creates the main aerodynamic loading pattern:
 
 while the streamwise component of the pressure loading produces wave drag.
 
-The important point is that I do not start by looking at the final `C_D` and `C_L`.
+The important point is that The assessment does not begin with the final `C_D` and `C_L`.
 
-I first ask whether the solver has produced the correct physical wave system.
+The physical wave system is checked first.
 
 > **A correct force coefficient with the wrong shock or expansion structure would not be an acceptable solution.**
 
@@ -216,7 +216,7 @@ The next checks therefore compare the numerical wave field directly with analyti
 
 ## 5. Verification against compressible-flow theory
 
-Used several independent checks because no single CFD quantity is enough to prove that the full solution is physically correct.
+Several independent checks were used because no single CFD quantity is enough to prove that the full solution is physically correct.
 
 The first check is the leading-edge shock geometry.
 
