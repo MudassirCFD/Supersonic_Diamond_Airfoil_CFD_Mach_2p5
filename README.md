@@ -6,7 +6,7 @@ This project studies a two-dimensional diamond airfoil at Mach 2.5 and 5° angle
 
 The geometry creates a clear system of compression waves, oblique shocks and Prandtl-Meyer expansions. This makes it a useful case for checking whether a numerical solution recovers the physics predicted by classical compressible-flow theory [1].
 
-I developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes [2,3], WENO5-JS reconstruction [4] and SSP-RK3 time integration [5]. The airfoil is represented on a Cartesian grid using an immersed-boundary treatment [8].
+Developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes [2,3], WENO5-JS reconstruction [4] and SSP-RK3 time integration [5]. The airfoil is represented on a Cartesian grid using an immersed-boundary treatment [8].
 
 ## Numerical development of the wave field
 
@@ -20,9 +20,9 @@ I developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes 
   <em>Evolution of the numerical schlieren field from the initial transient towards the established Mach 2.5 shock-expansion structure.</em>
 </p>
 
-I do not accept a solution only because lift and drag become stable.
+The solution should not be accepted only because lift and drag become stable.
 
-I also check the shock angles, Rankine-Hugoniot states, Prandtl-Meyer expansion states, surface pressure, off-body wave structure and integrated aerodynamic forces against independent analytical references [1].
+Checked the shock angles, Rankine-Hugoniot states, Prandtl-Meyer expansion states, surface pressure, off-body wave structure and integrated aerodynamic forces against independent analytical references [1].
 
 > **Main engineering question:**  
 > Does the same aerodynamic conclusion survive when the modelling fidelity is increased?
@@ -88,7 +88,7 @@ Rusanov was useful as a robust starting point.
 
 It uses a single maximum signal speed and adds relatively strong numerical dissipation. This makes it simple and stable, but the same dissipation can smear shocks and contact structures [2].
 
-My earlier compressible-flow studies showed this behaviour directly. Rusanov remained robust, while HLLC recovered discontinuous wave structure more accurately.
+The earlier compressible-flow studies showed this behaviour directly. Rusanov remained robust, while HLLC recovered discontinuous wave structure more accurately.
 
 For this airfoil, that difference matters.
 
@@ -117,7 +117,7 @@ This gave me an important intermediate solver:
 
 **HLLC + Barth-Jespersen**
 
-I used this branch to check the HLLC flux, pressure field, force integration and convergence behaviour before adding the more expensive WENO5-JS reconstruction.
+Used this branch to check the HLLC flux, pressure field, force integration and convergence behaviour before adding the more expensive WENO5-JS reconstruction.
 
 The final integrated lift and drag from this branch were effectively the same as the later WENO5-HLLC solution.
 
@@ -140,7 +140,7 @@ For this problem, that matters because I need to preserve:
 - the mid-chord expansion structure;
 - the pressure distribution that produces wave drag and lift.
 
-I therefore moved from the limited HLLC branch to WENO5-JS when the improvement in local wave resolution justified the additional computational cost.
+Therefore moved from the limited HLLC branch to WENO5-JS when the improvement in local wave resolution justified the additional computational cost.
 
 The final Euler solver uses:
 
@@ -216,7 +216,7 @@ The next checks therefore compare the numerical wave field directly with analyti
 
 ## 5. Verification against compressible-flow theory
 
-I use several independent checks because no single CFD quantity is enough to prove that the full solution is physically correct.
+Used several independent checks because no single CFD quantity is enough to prove that the full solution is physically correct.
 
 The first check is the leading-edge shock geometry.
 
