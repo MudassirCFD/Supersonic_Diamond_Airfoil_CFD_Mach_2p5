@@ -109,11 +109,11 @@ S_L,\qquad S_*,\qquad S_R.
 ```
 ### 3.4 Barth-Jespersen reconstruction
 
-Before moving to WENO5-JS, An HLLC solver using Barth-Jespersen limited reconstruction [6] was developed.
+Before moving to WENO5-JS, an HLLC solver using Barth-Jespersen limited reconstruction [6] was developed.
 
 The limiter allows higher-order reconstruction in smooth regions, but reduces the reconstruction close to strong gradients where non-physical oscillations can appear.
 
-This provided an important intermediate solver
+This provided an important intermediate solver:
 
 **HLLC + Barth-Jespersen**
 
@@ -204,7 +204,7 @@ This creates the main aerodynamic loading pattern:
 
 while the streamwise component of the pressure loading produces wave drag.
 
-The important point is that The assessment does not begin with the final `C_D` and `C_L`.
+The assessment does not begin with the final `C_D` and `C_L`.
 
 The physical wave system is checked first.
 
