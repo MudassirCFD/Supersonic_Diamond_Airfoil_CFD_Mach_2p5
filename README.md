@@ -6,7 +6,7 @@ This project studies a two-dimensional diamond airfoil at Mach 2.5 and 5° angle
 
 The geometry creates a clear system of compression waves, oblique shocks and Prandtl-Meyer expansions. This makes it a useful case for checking whether a numerical solution recovers the physics predicted by classical compressible-flow theory [1].
 
-Developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes [2,3], WENO5-JS reconstruction [4] and SSP-RK3 time integration [5]. The airfoil is represented on a Cartesian grid using an immersed-boundary treatment [8].
+A custom C++ finite-volume Euler solver was developed using HLLC intercell fluxes [2,3], WENO5-JS reconstruction [4] and SSP-RK3 time integration [5]. The airfoil is represented on a Cartesian grid using an immersed-boundary treatment [8].
 
 ## Numerical development of the wave field
 
@@ -22,7 +22,7 @@ Developed a custom C++ finite-volume Euler solver using HLLC intercell fluxes [2
 
 The solution should not be accepted only because lift and drag become stable.
 
-Checked the shock angles, Rankine-Hugoniot states, Prandtl-Meyer expansion states, surface pressure, off-body wave structure and integrated aerodynamic forces against independent analytical references [1].
+The shock angles, Rankine-Hugoniot states, Prandtl-Meyer expansion states, surface pressure, off-body wave structure and integrated aerodynamic forces were checked against independent analytical references [1].
 
 > **Main engineering question:**  
 > Does the same aerodynamic conclusion survive when the modelling fidelity is increased?
@@ -44,7 +44,7 @@ For this case:
 
 The important advantage is that these states can be calculated independently using oblique-shock and Prandtl-Meyer theory [1].
 
-That gives me a reference outside the CFD solver.
+This provides an independent reference outside the CFD solver.
 
 The solver therefore has to do more than produce a smooth-looking flow field. It has to recover the correct wave system and produce aerodynamic forces that are consistent with that physics.
 
@@ -83,7 +83,7 @@ The inviscid branch solves the two-dimensional compressible Euler equations in c
 \frac{\partial \mathbf{G}}{\partial y}
 =0,
 ```
-### 3.2 Why I moved beyond Rusanov
+### 3.2 Why Rusanov was replaced by HLLC
 Rusanov was useful as a robust starting point.
 
 It uses a single maximum signal speed and adds relatively strong numerical dissipation. This makes it simple and stable, but the same dissipation can smear shocks and contact structures [2].
@@ -94,7 +94,7 @@ For this airfoil, that difference matters.
 
 The pressure change across each wave contributes directly to the aerodynamic force. If the numerical method smears the shock too strongly, it can also change the surface pressure and therefore the predicted wave drag and lift.
 
-So I moved to HLLC.
+HLLC was therefore adopted.
 
 ---
 
@@ -109,15 +109,15 @@ S_L,\qquad S_*,\qquad S_R.
 ```
 ### 3.4 Barth-Jespersen reconstruction
 
-Before moving to WENO5-JS, I developed an HLLC solver using Barth-Jespersen limited reconstruction [6].
+Before moving to WENO5-JS, An HLLC solver using Barth-Jespersen limited reconstruction [6] was developed.
 
 The limiter allows higher-order reconstruction in smooth regions, but reduces the reconstruction close to strong gradients where non-physical oscillations can appear.
 
-This gave me an important intermediate solver:
+This provided an important intermediate solver
 
 **HLLC + Barth-Jespersen**
 
-Used this branch to check the HLLC flux, pressure field, force integration and convergence behaviour before adding the more expensive WENO5-JS reconstruction.
+This branch was used to check the HLLC flux, pressure field, force integration and convergence behaviour before adding the more expensive WENO5-JS reconstruction.
 
 The final integrated lift and drag from this branch were effectively the same as the later WENO5-HLLC solution.
 
@@ -127,13 +127,13 @@ That was useful evidence: changing the reconstruction changed the local numerica
 
 The flow contains two very different numerical regions.
 
-In smooth parts of the domain, I want high-order accuracy.
+High-order accuracy is required in smooth regions.
 
 Across shocks, the solution is discontinuous and a normal high-order reconstruction can create non-physical oscillations.
 
 WENO5-JS handles this by reconstructing the solution from several candidate stencils. In smooth regions, the stencils combine to recover fifth-order accuracy. Close to a discontinuity, the nonlinear weights reduce the influence of stencils that cross the shock [4].
 
-For this problem, that matters because I need to preserve:
+For this problem, that matters because the numerical method must preserve:
 
 - the leading-edge compression waves;
 - the sharp pressure rise across the oblique shocks;
