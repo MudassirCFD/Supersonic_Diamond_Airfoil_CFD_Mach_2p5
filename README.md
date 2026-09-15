@@ -528,8 +528,6 @@ The Euler branch establishes the inviscid shock-expansion reference, but it cann
 
 The same Mach 2.5, `α = 5°` diamond configuration is therefore being investigated using compressible wall-resolved RANS in OpenFOAM with the Spalart-Allmaras turbulence model [7].
 
-The first RANS route produced strong near-wall resolution and largely stable pressure behaviour, but the viscous contribution continued to evolve beyond the adopted convergence limits. The calculation was therefore not accepted as a final reference.
-
 The investigation was then extended beyond solver convergence alone. Domain sensitivity, mass conservation, numerical settings and mesh quality were examined separately, which ultimately led to a redesign of the RANS meshing strategy before any production result was accepted.
 
 > **The RANS stage is treated as a verification problem in its own right rather than as a direct extension of the Euler solution.**
@@ -546,15 +544,19 @@ The calculation was therefore not accepted as the final RANS reference.
 
 This triggered a wider investigation of the numerical setup rather than simply extending the run further.
 
-## 7. Increasing the modelling fidelity: wall-resolved SA-RANS
+### 7.2 Why the original H-grid was abandoned
 
-The Euler branch establishes the inviscid shock-expansion reference, but it cannot represent skin friction, boundary-layer development or viscous interaction with the pressure field.
+The convergence issue was not traced to domain size or mass conservation, so the mesh itself was examined in more detail.
 
-The same Mach 2.5, `α = 5°` diamond configuration is therefore being investigated using compressible wall-resolved RANS in OpenFOAM with the Spalart-Allmaras turbulence model [7].
+The structured H-grid showed a broad determinant-quality problem rather than a small number of isolated bad cells. More than `23%` of the D1 medium grid fell below the adopted determinant threshold.
 
-The investigation was extended beyond solver convergence alone. Domain sensitivity, mass conservation, numerical settings and mesh quality were examined separately, which ultimately led to a redesign of the RANS meshing strategy before any production result was accepted.
+The low-quality cells followed the global structured mapping from the wall towards the far field, showing that the near-wall resolution was being propagated too aggressively through the complete domain.
 
-> **The RANS stage is treated as a verification problem in its own right rather than as a direct extension of the Euler solution.**
+Two further structured `blockMesh` redesigns were tested, but both retained or worsened the same underlying problem.
+
+The H-grid strategy was therefore abandoned rather than refined further.
+
+> **The problem was treated as a topology issue, not simply as a lack of cells.**
 
 ### 7.3 Transition to a hybrid Gmsh topology
 
