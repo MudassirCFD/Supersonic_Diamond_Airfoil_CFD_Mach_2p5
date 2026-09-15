@@ -1,12 +1,14 @@
 # Supersonic Diamond Airfoil CFD at Mach 2.5
 
-**From compressible-flow theory to a custom C++ shock-capturing solver and an ongoing wall-resolved SA-RANS study**
+**From compressible-flow theory to a custom C++ shock-capturing solver and evidence-driven wall-resolved SA-RANS development**
 
 This project studies a two-dimensional diamond airfoil at Mach 2.5 and 5° angle of attack.
 
 The geometry creates a clear system of compression waves, oblique shocks and Prandtl-Meyer expansions. This makes it a useful case for checking whether a numerical solution recovers the physics predicted by classical compressible-flow theory [1].
 
 A custom C++ finite-volume Euler solver was developed using HLLC intercell fluxes [2,3], WENO5-JS reconstruction [4] and SSP-RK3 time integration [5]. The airfoil is represented on a Cartesian grid using an immersed-boundary treatment [8].
+
+The verified Euler solution provides the inviscid reference, while the wall-resolved SA-RANS branch is being rebuilt around a redesigned hybrid mesh after the original structured RANS mesh failed the adopted convergence and mesh-quality criteria.
 
 ## Numerical development of the wave field
 
@@ -639,55 +641,72 @@ frozen production methodology
 ```
 > **No aerodynamic result from the redesigned mesh will be accepted before both the mesh and the resulting RANS solution pass their respective verification gates.**
 
-## 8. From verified RANS baseline to aerodynamic design
+## 8. From the verified RANS reference to aerodynamic design
 
-The wall-resolved SA-RANS case is being used to establish the viscous reference solution for the next stage of the project.
+The redesigned RANS methodology will not move directly into a design study once the mesh is generated.
 
-The objective is not to begin a parameter sweep as soon as the solver appears stable.
+The replacement hybrid mesh must first pass the complete OpenFOAM quality audit and then produce a stationary wall-resolved SA-RANS reference solution under the locked convergence criteria.
 
-The reference case must first be converged, checked for domain sensitivity and then frozen as the production CFD setup.
+Only after that reference has been established will a formal three-grid convergence study be carried out.
 
-### 8.1 Prove domain independence
+The intended progression is:
 
-Once the large-domain reference case has converged, a smaller candidate domain will be created and warm-started from the established solution.
+```text
+integrated hybrid mesh certification
+        ↓
+converged RANS reference
+        ↓
+G3 / G2 / G1 grid-convergence study
+        ↓
+Richardson extrapolation and GCI
+        ↓
+freeze production CFD methodology
+        ↓
+controlled angle-of-attack study
+        ↓
+aerodynamic design and optimisation
+```
+The objective is to ensure that later aerodynamic trends are produced by changes in operating condition or geometry rather than by unresolved numerical uncertainty.
+> **The design study begins only after the RANS mesh, convergence behaviour and grid sensitivity have been demonstrated independently.**
 
-The purpose is to determine whether the far-field boundaries can be moved closer without changing the aerodynamic result.
+### 8.1 Formal grid convergence and GCI
 
-The two domains will be compared using:
+Once the redesigned RANS reference case has passed the mesh-quality and convergence gates, a new three-grid family will be generated from the corrected topology.
+
+The coarse, medium and fine meshes will retain the same:
+
+- physical domain;
+- wall treatment;
+- sharp-edge strategy;
+- wake and shock refinement logic;
+- solver settings;
+- force and moment definitions.
+
+The objective is to quantify numerical uncertainty rather than simply show that the coefficients change only slightly with refinement.
+
+The study will use Richardson extrapolation and the Grid Convergence Index to assess quantities such as
 
 ```math
-C_D,\quad
-C_{D,p},\quad
-C_{D,v},\quad
-C_L,\quad
-C_m,
+C_D,\qquad
+C_{D,p},\qquad
+C_{D,v},\qquad
+C_L,\qquad
+C_m.
 ```
+Surface pressure and wall quantities will also be checked to confirm that global force agreement is supported by consistent local flow behaviour.
 
-together with
+> **Grid independence will only be claimed from a mesh family that shares the corrected topology and demonstrates systematic convergence.**
 
-```math
-C_p(x/c),\quad
-y^+(x/c),\quad
-\tau_w(x/c),
-```
+### 8.2 Freeze the production CFD methodology
 
-and the position and strength of the principal shock system.
+After the corrected mesh family has passed the grid-convergence study, the accepted numerical setup will be frozen before any design changes are introduced.
 
-If the smaller domain reproduces the reference solution within the adopted tolerances, it will become the production domain for the remaining study.
-
-This avoids carrying unnecessary computational cost into every subsequent case while preserving the validated flow physics.
-
-### 8.2 Freeze the production CFD setup
-
-After the domain-independence check, the accepted numerical setup will be frozen.
-
-The same production methodology will then be retained across the design study so that changes in aerodynamic performance can be attributed to the operating condition or geometry rather than to changes in the CFD setup.
-
-The frozen configuration will define the common:
+The production methodology will retain the same:
 
 - computational domain;
 - meshing strategy;
-- near-wall resolution;
+- wall resolution;
+- sharp-edge treatment;
 - turbulence model;
 - numerical schemes;
 - boundary conditions;
@@ -695,61 +714,47 @@ The frozen configuration will define the common:
 - convergence criteria;
 - post-processing procedure.
 
-> **Once the baseline methodology is verified, the solver setup stops being another design variable.**
+This prevents changes in aerodynamic performance from being confused with changes in the CFD setup.
 
-### 8.3 Controlled angle-of-attack sweep
+> **Once the numerical methodology has been verified, the solver and mesh setup stop being additional design variables.**
 
-The first production study will be a controlled angle-of-attack sweep.
+### 8.3 Controlled angle-of-attack study
 
-The aim is to determine how incidence changes the complete shock-boundary-layer-pressure system rather than looking only at the final force coefficients.
+The first production study will be a controlled angle-of-attack sweep using the frozen RANS methodology.
 
-For each incidence, the study will track:
+The purpose is to track how incidence changes the complete shock, pressure and boundary-layer system rather than looking only at the final force coefficients.
+
+For each angle of attack, the study will examine:
 
 - leading-edge shock angle and strength;
 - expansion behaviour;
 - surface-pressure redistribution;
-- boundary-layer response;
-- `Cl`, `Cd` and `Cm`;
-- pressure and viscous drag contributions;
-- lift-to-drag ratio.
+- viscous drag and wall shear;
+- lift, drag and pitching moment;
+- changes in aerodynamic efficiency.
 
-The same verification logic used for the reference case will be retained throughout the sweep.
+The same mesh strategy, solver settings and convergence criteria will be retained across the sweep so that the observed trends can be attributed to the operating condition.
 
-```text
-angle of attack
-      ↓
-local flow turning
-      ↓
-shock and expansion strength
-      ↓
-boundary-layer response
-      ↓
-surface pressure and skin friction
-      ↓
-Cl, Cd and Cm
-```
+> **The angle-of-attack study will be used to connect changes in the wave structure and viscous response directly to the resulting aerodynamic performance.**
 
-### 8.4 Geometry optimisation
+### 8.4 Aerodynamic design and optimisation
 
-Only after the baseline and incidence behaviour are understood will the geometry be varied.
+Once the angle-of-attack study has established the baseline aerodynamic trends, the same verified RANS methodology will be used for controlled geometry changes.
 
-The optimisation will investigate whether the shock-expansion system can be reshaped to improve aerodynamic performance without creating an unacceptable penalty elsewhere.
+The objective will be to improve aerodynamic performance without losing sight of the underlying flow physics.
 
-Candidate design variables include:
+Candidate designs will therefore be assessed through both the integrated coefficients and the changes responsible for them:
 
-| Design variable | Main aerodynamic effect |
-|---|---|
-| Thickness ratio, `t/c` | Changes panel angle and compression strength |
-| Maximum-thickness location | Changes the position of compression and expansion waves |
-| Forward-panel angle | Controls leading-edge compression |
-| Rear-panel angle | Controls expansion and rear-panel pressure recovery |
-| Angle of attack | Changes the balance between the upper and lower wave systems |
+- shock strength and position;
+- expansion behaviour;
+- surface-pressure distribution;
+- viscous drag and wall shear;
+- lift-to-drag ratio;
+- pitching-moment behaviour.
 
-Performance will not be judged from drag alone.
+Any geometry change will be compared against the same frozen reference methodology so that the effect of the design itself can be separated from numerical variation.
 
-Changes in lift, wave drag, viscous drag, pitching moment, shock structure and boundary-layer behaviour will all be considered.
-
-A candidate will only be treated as an improvement if the aerodynamic benefit remains physically consistent with the verified flow solution.
+> **The optimisation stage will only begin after the numerical uncertainty of the baseline method has been established and the main aerodynamic mechanisms are understood.**
 
 ### 8.5 Final verification of the optimum
 
