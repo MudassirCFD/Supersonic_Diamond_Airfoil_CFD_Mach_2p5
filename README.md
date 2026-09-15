@@ -629,16 +629,6 @@ verified wall spacing and wall-face count
 ```
 Only after this mesh passes the global quality gate will the new wall-resolved SA-RANS calculation begin.
 
-The subsequent stages will then be:
-```text
-new RANS reference
-        ↓
-convergence assessment
-        ↓
-formal grid-convergence study
-        ↓
-frozen production methodology
-```
 > **No aerodynamic result from the redesigned mesh will be accepted before both the mesh and the resulting RANS solution pass their respective verification gates.**
 
 ## 8. Verification path to aerodynamic design
@@ -755,30 +745,6 @@ Candidate designs will therefore be assessed through both the integrated coeffic
 Any geometry change will be compared against the same frozen reference methodology so that the effect of the design itself can be separated from numerical variation.
 
 > **The optimisation stage will only begin after the numerical uncertainty of the baseline method has been established and the main aerodynamic mechanisms are understood.**
-
-### 8.5 Final verification of the optimum
-
-The best-performing geometry will not be accepted directly from the optimisation loop.
-
-It will be rerun using the validated production CFD methodology and subjected to the same convergence and physics checks used for the reference configuration.
-
-The complete engineering sequence is therefore:
-
-```text
-establish converged RANS reference
-              ↓
-prove domain independence
-              ↓
-freeze production CFD setup
-              ↓
-run controlled AoA sweep
-              ↓
-optimise geometry
-              ↓
-rerun validated CFD on the optimum
-```
-
-> **The optimisation begins only after the numerical method has stopped being the main uncertainty.**
 
 ---
 
