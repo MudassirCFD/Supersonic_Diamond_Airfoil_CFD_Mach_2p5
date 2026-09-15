@@ -579,6 +579,65 @@ local wake refinement
         +
 shock-aligned refinement corridors
 ```
+This removes the need for the near-wall spacing to control the complete far-field mesh.
+
+The outer transition, wake region and shock-refinement strategy were developed and checked separately before being combined with the wall treatment.
+
+> **The new mesh is built around the physics of the problem rather than a single global structured mapping.**
+
+### 7.4 Wall-resolved strip and sharp-edge development
+
+The new wall treatment was developed separately from the outer mesh so that the near-wall requirements could be verified directly.
+
+The revised standard wall strip uses:
+
+```text
+first wall spacing   = 1.2e-6 m
+tangential cells     = 5500 per panel
+wall-normal cells    = 90
+normal progression   = 1.0743
+```
+The first-cell height was increased only after the previous RANS solution showed sufficient y+ margin to remain wall resolved.
+
+Local OpenFOAM tests confirmed that the interior wall strip could satisfy the required quality criteria without reproducing the earlier global H-grid problem.
+
+The exact sharp leading and trailing edges were then treated separately because the corner interface introduced different numerical constraints from the normal wall region.
+
+Several local corner variants were rejected before the final V4 treatment removed the interpolation-weight and volume-ratio failures at the actual sharp-edge cap.
+
+> **The wall strip and sharp-edge regions were therefore designed and verified as separate mesh problems rather than forcing one spacing strategy to satisfy both.**
+
+### 7.5 Current RANS status
+
+The accepted wall, corner, wake, shock and outer-field strategies are now being integrated into the full replacement mesh.
+
+Local tests have already been used to remove the dominant wall-strip and sharp-edge quality problems before committing to another production CFD run.
+
+The complete mesh will only be promoted to the new RANS reference after the full OpenFOAM audit confirms:
+
+```text
+one connected region
+correct physical patches
+frontAndBack = empty
+zero determinant failures
+zero low interpolation-weight failures
+zero low volume-ratio failures
+acceptable non-orthogonality and skewness
+verified wall spacing and wall-face count
+```
+Only after this mesh passes the global quality gate will the new wall-resolved SA-RANS calculation begin.
+
+The subsequent stages will then be:
+```text
+new RANS reference
+        ↓
+convergence assessment
+        ↓
+formal grid-convergence study
+        ↓
+frozen production methodology
+```
+> **No aerodynamic result from the redesigned mesh will be accepted before both the mesh and the resulting RANS solution pass their respective verification gates.**
 
 ## 8. From verified RANS baseline to aerodynamic design
 
