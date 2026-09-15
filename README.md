@@ -181,7 +181,7 @@ Available runtime options can be viewed with:
 
 ---
 
-## 4. WENO5-HLLC flow field
+## 4. WENO5-JS + HLLC flow field
 
 The final Euler solution recovers the expected asymmetric supersonic wave system.
 
@@ -496,7 +496,7 @@ The final 12 recorded force samples are identical at the precision stored in the
 
 The cellwise residual and solution change histories remain oscillatory at late iterations and do not provide standalone evidence of convergence. Their history is therefore retained in `figures/diagnostics/` as a numerical diagnostic rather than used as the primary convergence result.
 
-Convergence of the reference solution is assessed from the stationary aerodynamic coefficients together with the independently verified shock geometry, pressure states and surface loading.
+Acceptance of the Euler reference is based on the stationary aerodynamic coefficients together with the independently verified shock geometry, pressure states and surface loading.
 
 > **The final aerodynamic loading is stationary, while the residual history is reported separately and interpreted as a diagnostic rather than a convergence claim.**
 
