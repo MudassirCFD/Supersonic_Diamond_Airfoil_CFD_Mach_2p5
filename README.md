@@ -641,7 +641,7 @@ frozen production methodology
 ```
 > **No aerodynamic result from the redesigned mesh will be accepted before both the mesh and the resulting RANS solution pass their respective verification gates.**
 
-## 8. From the verified RANS reference to aerodynamic design
+## 8. Verification path to aerodynamic design
 
 The redesigned RANS methodology will not move directly into a design study once the mesh is generated.
 
