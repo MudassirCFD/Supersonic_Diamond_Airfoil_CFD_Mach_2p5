@@ -526,107 +526,59 @@ For this reason, isolated values taken directly at a sharp corner are not used a
 
 ## 7. Increasing the modelling fidelity: wall-resolved SA-RANS
 
-The Euler solver establishes the inviscid shock-expansion physics, but it cannot predict skin friction or the interaction between the boundary layer and the pressure field.
+The Euler branch establishes the inviscid shock-expansion reference, but it cannot represent skin friction, boundary-layer development or viscous interaction with the pressure field.
 
-The next stage therefore repeats the same Mach 2.5, `α = 5°` case using compressible wall-resolved RANS in OpenFOAM with the Spalart-Allmaras turbulence model [7].
+The same Mach 2.5, `α = 5°` diamond configuration is therefore being investigated using compressible wall-resolved RANS in OpenFOAM with the Spalart-Allmaras turbulence model [7].
 
-The purpose is not simply to generate another CFD result.
+The first RANS route produced strong near-wall resolution and largely stable pressure behaviour, but the viscous contribution continued to evolve beyond the adopted convergence limits. The calculation was therefore not accepted as a final reference.
 
-The question is whether the main aerodynamic conclusion remains consistent when viscous physics are introduced.
+The investigation was then extended beyond solver convergence alone. Domain sensitivity, mass conservation, numerical settings and mesh quality were examined separately, which ultimately led to a redesign of the RANS meshing strategy before any production result was accepted.
 
-### 7.1 Current RANS status
+> **The RANS stage is treated as a verification problem in its own right rather than as a direct extension of the Euler solution.**
 
-The SA-RANS calculation is still being converged, so no final viscous coefficient is reported yet.
+### 7.1 Initial RANS assessment
 
-At iteration `15000`, the monitored aerodynamic coefficients are:
+The first wall-resolved SA-RANS calculation used a structured body-fitted H-grid.
 
-| Quantity | Value |
-|---|---:|
-| `Cd` | 0.035215 |
-| Pressure drag, `Cd,p` | 0.029793 |
-| Viscous drag, `Cd,v` | 0.005422 |
-| `Cl` | 0.137125 |
-| `Cm` | -0.022348 |
-| `L/D` | 3.894 |
+The near-wall treatment was strong, with an average `y+ ≈ 0.33` and `P99(y+) ≈ 0.57`. However, continuation beyond `34,000` iterations showed that the viscous part of the solution had not reached a stationary state.
 
-The wall resolution at this stage is:
+The pressure contribution had largely stabilised, but viscous drag and wall shear continued to evolve beyond the adopted convergence limits.
 
-| Quantity | Value |
-|---|---:|
-| Minimum `y+` | 0.200 |
-| Average `y+` | 0.381 |
-| Maximum `y+` | 1.617 |
+The calculation was therefore not accepted as the final RANS reference.
 
-The near-wall resolution therefore remains appropriate for the wall-resolved SA treatment.
+This triggered a wider investigation of the numerical setup rather than simply extending the run further.
 
-However, the force history shows that the solution is still evolving.
+### 7.2 Why the original H-grid was abandoned
 
-Between iterations `8000` and `15000`:
+The convergence issue was not traced to domain size or mass conservation, so the mesh itself was examined in more detail.
 
-| Quantity | Iteration 8000 | Iteration 15000 | Change |
-|---|---:|---:|---:|
-| `Cd` | 0.034278 | 0.035215 | +2.73% |
-| `Cd,p` | 0.027900 | 0.029793 | +6.78% |
-| `Cd,v` | 0.006378 | 0.005422 | -14.99% |
-| `Cl` | 0.134790 | 0.137125 | +1.73% |
-| `Cm` | -0.024255 | -0.022348 | -7.86% in magnitude |
+The structured H-grid showed a broad determinant-quality problem rather than a small number of isolated bad cells. More than `23%` of the D1 medium grid fell below the adopted determinant threshold.
 
-The longer calculation therefore shows that the apparent pressure-force stationarity observed near iteration `8000` was premature.
+The low-quality cells followed the global structured mapping from the wall towards the far field, showing that the near-wall resolution was being propagated too aggressively through the complete domain.
 
-The pressure contribution has moved upward while the viscous contribution has continued to decrease.
+Two further structured `blockMesh` redesigns were tested, but both retained or worsened the same underlying problem.
 
-> **The RANS reference is therefore still provisional and will only be accepted when pressure drag, viscous drag, lift and pitching moment are simultaneously stationary.**
+The H-grid strategy was therefore abandoned rather than refined further.
 
-### 7.2 Current cross-fidelity observation
+> **The problem was treated as a topology issue, not simply as a lack of cells.**
 
-The converged Euler reference gives
+### 7.3 Transition to a hybrid Gmsh topology
 
-```math
-C_D = 0.031606.
-```
+After the structured redesigns failed, the meshing strategy was changed rather than patched again.
 
-Because the Euler calculation contains no wall-shear contribution, this drag is entirely pressure generated.
-
-At iteration `15000`, the RANS pressure contribution is
-
-```math
-C_{D,p} = 0.029793,
-```
-
-approximately `5.74%` below the Euler value.
-
-The RANS calculation also contains a viscous contribution,
-
-```math
-C_{D,v} = 0.005422,
-```
-
-giving
-
-```math
-C_D = 0.035215.
-```
-
-The total RANS drag is therefore approximately `11.42%` above the Euler result.
+The replacement approach uses a hybrid topology so that each region of the flow can be resolved according to its own numerical requirement:
 
 ```text
-Euler
-Cd = 0.031606
-pressure loading only
-        ↓
-viscous RANS
-        ↓
-Cd,p = 0.029793
-Cd,v = 0.005422
-        ↓
-Cd = 0.035215
+structured wall-resolved strips
+        +
+explicit sharp-edge treatment
+        +
+unstructured outer field
+        +
+local wake refinement
+        +
+shock-aligned refinement corridors
 ```
-
-The lower RANS pressure contribution is treated as an observation rather than evidence of agreement with the Euler solution.
-
-Its physical origin will be assessed after convergence using the surface-pressure distribution, shock structure and boundary-layer behaviour.
-
-> **The final Euler-RANS comparison will be based on the converged pressure and viscous force components together with the flow physics responsible for them.**
 
 ## 8. From verified RANS baseline to aerodynamic design
 
