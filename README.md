@@ -121,10 +121,6 @@ This provided an important intermediate solver:
 
 This branch was used to check the HLLC flux, pressure field, force integration and convergence behaviour before adding the more expensive WENO5-JS reconstruction.
 
-The final integrated lift and drag from this branch were effectively the same as the later WENO5-HLLC solution.
-
-That was useful evidence: changing the reconstruction changed the local numerical treatment, but did not change the final aerodynamic loading at the reported precision.
-
 ### 3.5 Why WENO5-JS?
 
 The flow contains two very different numerical regions.
@@ -550,19 +546,15 @@ The calculation was therefore not accepted as the final RANS reference.
 
 This triggered a wider investigation of the numerical setup rather than simply extending the run further.
 
-### 7.2 Why the original H-grid was abandoned
+## 7. Increasing the modelling fidelity: wall-resolved SA-RANS
 
-The convergence issue was not traced to domain size or mass conservation, so the mesh itself was examined in more detail.
+The Euler branch establishes the inviscid shock-expansion reference, but it cannot represent skin friction, boundary-layer development or viscous interaction with the pressure field.
 
-The structured H-grid showed a broad determinant-quality problem rather than a small number of isolated bad cells. More than `23%` of the D1 medium grid fell below the adopted determinant threshold.
+The same Mach 2.5, `α = 5°` diamond configuration is therefore being investigated using compressible wall-resolved RANS in OpenFOAM with the Spalart-Allmaras turbulence model [7].
 
-The low-quality cells followed the global structured mapping from the wall towards the far field, showing that the near-wall resolution was being propagated too aggressively through the complete domain.
+The investigation was extended beyond solver convergence alone. Domain sensitivity, mass conservation, numerical settings and mesh quality were examined separately, which ultimately led to a redesign of the RANS meshing strategy before any production result was accepted.
 
-Two further structured `blockMesh` redesigns were tested, but both retained or worsened the same underlying problem.
-
-The H-grid strategy was therefore abandoned rather than refined further.
-
-> **The problem was treated as a topology issue, not simply as a lack of cells.**
+> **The RANS stage is treated as a verification problem in its own right rather than as a direct extension of the Euler solution.**
 
 ### 7.3 Transition to a hybrid Gmsh topology
 
