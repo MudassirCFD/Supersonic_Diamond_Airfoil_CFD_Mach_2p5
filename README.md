@@ -528,7 +528,7 @@ The Euler branch establishes the inviscid shock-expansion reference, but it cann
 
 The same Mach 2.5, `α = 5°` diamond configuration is therefore being investigated using compressible wall-resolved RANS in OpenFOAM with the Spalart-Allmaras turbulence model [7].
 
-The investigation was then extended beyond solver convergence alone. Domain sensitivity, mass conservation, numerical settings and mesh quality were examined separately, which ultimately led to a redesign of the RANS meshing strategy before any production result was accepted.
+The investigation was extended beyond solver convergence alone. Domain sensitivity, mass conservation, numerical settings and mesh quality were examined separately, which ultimately led to a redesign of the RANS meshing strategy before any production result was accepted.
 
 > **The RANS stage is treated as a verification problem in its own right rather than as a direct extension of the Euler solution.**
 
