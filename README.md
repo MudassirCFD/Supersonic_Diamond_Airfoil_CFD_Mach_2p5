@@ -526,7 +526,7 @@ For this reason, isolated values taken directly at a sharp corner are not used a
 
 The Euler branch establishes the inviscid shock-expansion reference, but it cannot represent skin friction, boundary-layer development or viscous interaction with the pressure field.
 
-The same Mach 2.5, `α = 5°` diamond configuration is therefore being investigated using compressible wall-resolved RANS in OpenFOAM with the Spalart-Allmaras turbulence model [7].
+The same Mach 2.5, `α = 5°` diamond configuration is therefore being investigated using compressible wall-resolved RANS in OpenFOAM [10] with the Spalart-Allmaras turbulence model [7].
 
 The investigation was extended beyond solver convergence alone. Domain sensitivity, mass conservation, numerical settings and mesh quality were examined separately, which ultimately led to a redesign of the RANS meshing strategy before any production result was accepted.
 
@@ -562,7 +562,7 @@ The H-grid strategy was therefore abandoned rather than refined further.
 
 After the structured redesigns failed, the meshing strategy was changed rather than patched again.
 
-The replacement approach uses a hybrid topology so that each region of the flow can be resolved according to its own numerical requirement:
+The replacement approach uses a hybrid Gmsh topology [9] so that each region of the flow can be resolved according to its own numerical requirement:
 
 ```text
 structured wall-resolved strips
@@ -584,6 +584,8 @@ The outer transition, wake region and shock-refinement strategy were developed a
 ### 7.4 Wall-resolved strip and sharp-edge development
 
 The new wall treatment was developed separately from the outer mesh so that the near-wall requirements could be verified directly.
+
+The wall-normal spacing strategy follows the low-`y+` verification approach used in the NASA/AIAA Turbulence Modeling Resource [11,12], while the actual first-cell height is based on the previous RANS `y+` evidence from this case.
 
 The revised standard wall strip uses:
 
@@ -759,3 +761,11 @@ Any geometry change will be compared against the same frozen reference methodolo
 [7] P. R. Spalart and S. R. Allmaras, “A one-equation turbulence model for aerodynamic flows,” AIAA Paper 92-0439, 30th Aerospace Sciences Meeting and Exhibit, 1992. https://doi.org/10.2514/6.1992-439
 
 [8] R. Mittal and G. Iaccarino, “Immersed Boundary Methods,” *Annual Review of Fluid Mechanics*, Vol. 37, pp. 239–261, 2005. https://doi.org/10.1146/annurev.fluid.37.061903.175743
+
+[9] C. Geuzaine and J.-F. Remacle, “Gmsh: A 3-D finite element mesh generator with built-in pre- and post-processing facilities,” *International Journal for Numerical Methods in Engineering*, Vol. 79, No. 11, pp. 1309–1331, 2009. doi:10.1002/nme.2579
+
+[10] OpenCFD Ltd., *rhoCentralFoam - OpenFOAM Documentation*, OpenFOAM v2306, 2023.
+
+[11] NASA/AIAA Turbulence Modeling Resource, *2D Zero Pressure Gradient Flat Plate - Effect of Minimum y+*.
+
+[12] NASA/AIAA Turbulence Modeling Resource, *Grids - 2D Zero Pressure Gradient Flat Plate Verification Case*.
